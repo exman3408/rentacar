@@ -4,9 +4,9 @@
     900
   ],
   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
-  "samples": 23,
-  "meanFrameMs": 572.5304347826066,
-  "estimatedFps": 1.746632037788011,
-  "qualityReduced": true,
+  "samples": 16,
+  "meanFrameMs": 1046.3187500000117,
+  "estimatedFps": 0.9557317022178842,
+  "qualityReduced": false,
   "scope": "Headless Chromium software rendering; current car scene; includes automation overhead. Not hardware or sustained 60 FPS validation."
 }

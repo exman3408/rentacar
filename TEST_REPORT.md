@@ -1,55 +1,54 @@
-# RANTE CAR — Test raporu
+# RANTE CAR — Güncel test raporu
 
-Tarih: 26 Ekim 2026. Ortam: Linux, Node.js 24.19.0, npm 11.9.0; kurulu gerçek Chromium, Playwright; ANGLE/SwiftShader yazılımsal WebGL. Bu rapor gerçek dosya ve tarayıcı kontrollerine dayanır; görsel referansla eşdeğerlik onayı değildir.
+26 Ekim 2026. Linux, Node.js 24.19, gerçek Chromium ve Playwright. WebGL: ANGLE / SwiftShader; donanımlı masaüstü GPU'su veya fiziksel telefon kullanılmadı.
 
-## Kurulum / derleme
+## Gerçekçi araç sahnesi güncellemesi
 
-- `npm install`: başarılı.
-- `npm ci --cache /tmp/rante-npm`: kilit dosyasından başarılı, 28 paket.
-- `npm run dev`: Vite sunucusu başladı. Ana sayfa ve yerel MH-6 GLB isteği HTTP 200.
-- `npm run build`: TypeScript ve Vite production derlemesi başarılı. Yaklaşık 612 kB minify edilmiş JS için 500 kB chunk uyarısı var; hata değil, bundle optimizasyonu henüz yapılmadı.
-- Beş GLB'de glTF 2.0 magic/version/byteLength ve gerçek mesh varlığı doğrulandı. SUV: 5 mesh, sedan: 6, her tekne: 1, helikopter: 6.
+Aktif araç modeli Car Concept (Eric Chadwick / Darmstadt Graphics Group GmbH, CC BY 4.0). Aynı modelin Graphite ve Pearl boya seçenekleri gösterilir. Bu iki farklı araç geometrisi değildir. Yaklaşık 213.347 üçgen ve yükleyici sonrasında 108 mesh vardır. PBR boya, AO ve lastik dokuları; yerel Venice Sunset HDRI + PMREM yansımaları, prosedürel dokulu beton mimari ve yönlü temas gölgeleri kullanılır. Eski Kenney araçları aktif filo listesinden çıkarıldı. İki stilize sürat teknesi ve bir MH-6 önceki kapsamıyla korunur.
 
-## Gerçek tarayıcı senaryoları
+`public/models/car-concept.glb`, kaynak GLB'den `scripts/prepare-concept.py` ile türetilir. Grafit materyal varyantı varsayılan yapılır, plaka logosu ve direksiyon amblemi görünümden kaldırılır. Kaynak, lisans ve değişiklik kayıtları [ASSET_SOURCES.md](ASSET_SOURCES.md) içindedir.
 
-`npm test`: **2 test geçti**, son tam tur yaklaşık 1,9 dakika. Tek bir uçtan uca test birçok adımı ardışık doğrular; aşağıdaki satırlar ayrı test sayısı değildir.
+## Kurulum ve derleme
 
-| Kontrol | Sonuç / kapsam |
+- İlk kurulumda `npm install` ve kilit dosyasından `npm ci`: başarılı.
+- Güncel `npm run build`: TypeScript + Vite production derlemesi başarılı.
+- Yaklaşık 623 kB minify JS için 500 kB chunk uyarısı sürer; bundle parçalama henüz yapılmadı.
+- Dev sunucusu ve yerel model/HDR dosyaları HTTP üzerinden servis edilir. Runtime'da model CDN'i veya kimlik bilgisi gerekmez.
+
+## Gerçek Chromium kontrolleri
+
+Son değişikliklerden sonra `npm run build && npm test`: **2 test geçti (2,8 dakika)**. Mobil test 31,3 saniye; kapsamlı deneyim testi yaklaşık 2,3 dakika. Aşağıdaki satırlar bu iki testin içindeki senaryolardır; ayrı test sayıları değildir.
+
+| Senaryo | Doğrulanan davranış |
 |---|---|
-| Başlangıç ve beş GLB'nin GLTFLoader ile yüklenmesi | Geçti; her seçili modelde mesh sayısı > 0. Görsel ekran görüntüleri alındı. |
-| Araç girişi / çıkışı | Geçti; girişte x < 0, merkezde x ≈ 0, değişimde çıkışta x > 0; iki ayrı gerçek model. Durduktan sonra tekerlek açıları sabit. |
-| Tekne girişi / değişimi | Geçti; eski tekne x > 0'a giderken yeni tekne x < 0'dan geliyor ve yerleşiyor. Bu bir **lüks yat testi değildir**. |
-| MH-6 inişi | Geçti; havada y > 0, iniş sonunda y ≈ 0; iki rotorun açısı zamanla değişiyor. |
-| MH-6 kalkışı / tekrar inişi | Geçti; tekrar oynatmada yükseklik artıyor, ardından tekrar yerleşiyor. İkinci helikopter modeli bulunmadığından **iki farklı helikopter arası değişim test edilmedi**. |
-| Hızlı seçim | Geçti; araç → tekne → araç hızlı seçiminden sonra son seçilen SUV yerleşti. |
-| Fare / klavye / zoom | Geçti; sürükleme ve + düğmesi kamera koordinatını değiştiriyor, sağ ok ürün değiştiriyor. Her tuşun tüm olası kombinasyonları sınanmadı. |
-| Detay modalı | Geçti; ödeme/rezervasyon alınmadığı açık, açma/kapama çalışıyor. |
-| Mobil yerleşim | Geçti; 390×844'te yatay sayfa taşması yok, CTA ve ürün kartı viewport içinde. |
-| Dokunmatik orbit ve pinch | Geçti; Chromium CDP touch olayları kamera yönünü ve uzaklığını değiştiriyor. Fiziksel telefon testi yapılmadı. |
-| Azaltılmış hareket / Escape | Geçti; reduced-motion emülasyonunda uygulama yükleniyor, Escape modalı kapatıyor. |
-| Hata / yeniden deneme | Geçti; GLB isteği bilinçli engellendi, sonlu hata durumu ve yeniden dene gösterildi; engel kaldırılınca model yüklendi. |
-| Normal akışta konsol / ağ | Yakalanmamış page error, console error veya HTTP ≥400 yok. Bilinçli engellenen yükleme bu kontrolün sonrasında ayrıca sınandı; bu senaryoda beklenen ağ hatası oluşur. |
+| Yeni detaylı model ve iki boya seçeneği | Gerçek GLTFLoader yüklemesi; mesh sayısı > 0; model ve başlık birlikte değişiyor. |
+| Araç girişi/çıkışı | Solda x < 0'dan giriş, merkezde x ≈ 0; seçimde eski aracın x > 0'a çıkışı. |
+| Tekerlekler | Hareket sırasında kendi yerel X aksında dönüş; duruşta sabit açı. İlk görsel kontrolde tespit edilen yanlış aks dönüşü düzeltildi. |
+| Tekne değişimi | Eski tekne sağdan çıkar; yeni tekne soldan gelir. Lüks yat testi değildir. |
+| Helikopter | Havadan yaklaşma ve y ≈ 0'a iniş, iki rotorun dönmesi, replay ile kalkış/yeniden iniş. İki farklı helikopter arası değişim denenmedi. |
+| Hızlı seçim | Araç → tekne → araç seçiminden sonra son seçimin yerleşmesi. |
+| Fare / zoom / klavye | Sürükleme ve + kamera koordinatını değiştirir; sağ ok ürün değiştirir. |
+| Mobil | 390×844'te yatay sayfa taşması yok; CTA ve ürün kartı erişilebilir. |
+| Gerçek tarayıcı touch emülasyonu | CDP touch sürükleme ve iki parmak pinch kamera yönü/uzaklığını değiştirir. |
+| Azaltılmış hareket | Reduced-motion emülasyonunda model yüklenir ve kontroller çalışır. |
+| Modal | Demo rezervasyon açıklaması; açma/kapama ve Escape. |
+| Yükleme hatası / yeniden deneme | Tekne GLB isteği bilinçli engellenir; açık hata ve yeniden dene gösterilir; engel kaldırılınca yüklenir. |
+| Konsol / ağ | Normal test akışında uncaught page error, console error ve HTTP ≥400 olmadığı kontrol edilir. Bilinçli engellenen GLB'nin beklenen ağ hatası ayrı senaryodur. |
 
-İlk turlarda eksik favicon 404'ü giderildi; kayan noktalı iniş yüksekliği uygun toleransla kontrol edildi. Yazılımsal render nedeniyle sabit 250 ms beklemeler güvenilir değildi; rotor ve kamera testleri gerçek durum değişimini bekler. Beklenen davranış koşulları kaldırılmadı.
-
-Mobil kadraj için portrait kamera açısı genişletildikten sonra `npm test -- accessibility.spec.ts` tekrar çalıştırıldı: **1 test geçti (9,4 saniye)**. Son `npm run build` de başarılı. Bu küçük kadraj ayarı sahne animasyon mantığını değiştirmez.
+Geliştirme sırasında bir tur, Vite dosya değişikliğiyle sayfa yenilendiği için zoom beklemesinde timeout oldu. Zoom ayrıca izole tarayıcıda doğrulandı: kamera [10, 3.5, 11] → [8.5, 3.155, 9.35]. Son test turunda uygulama dosyaları değiştirilmedi. Bu ara tur başarılı sayılmadı.
 
 ## Ekran görüntüleri
 
-- [Araç](docs/screenshots/car.png)
-- [Tekne](docs/screenshots/boat.png)
-- [Helikopter](docs/screenshots/helicopter.png)
-- [Mobil](docs/screenshots/mobile.png)
+[Araç — güncel beton mimari sahnesi](docs/screenshots/car.png) · [Tekne](docs/screenshots/boat.png) · [Helikopter](docs/screenshots/helicopter.png) · [Mobil](docs/screenshots/mobile.png)
 
-## Performans
+Görüntüler gerçek tarayıcı render'ıdır; üretilmiş tanıtım görseli veya döndürülen araç fotoğrafı değildir. SwiftShader otomatik olarak düşük çözünürlük ve şeffaf cam kullanır. Donanımlı WebGL'de camın fiziksel transmission materyali ve yüksek çözünürlük korunur; donanımlı sonuç ayrıca test edilmedi.
 
-Ölçüm komutu: `node scripts/measure.mjs` (sunucu çalışırken). Ham sonuç: [docs/performance.json](docs/performance.json). Ölçüm yazılımsal SwiftShader'dadır, gerçek GPU/telefon değildir; otomasyon yükü de dahildir. Son izole ölçüm: 23 örnek, ortalama **572,53 ms/frame**, yaklaşık **1,75 FPS**. Bu ortamda akıcılık hedefi karşılanmıyor. Düşük kare hızında çözünürlük ve shadow-map boyutu otomatik azaltılır. **60 FPS hedefinin karşılandığı doğrulanmadı.** Üretim donanımında süreklilik, bellek ve termal performans test edilmedi.
+## Performans ve kalan sınırlar
 
-## Tamamlanmamış gereksinimler
+`node scripts/measure.mjs` çıktısı [docs/performance.json](docs/performance.json) içindedir. Son kısa örneklem: 16 frame, ortalama 1046,32 ms/frame, yaklaşık 0,96 FPS. Başlangıç/derleme ve otomasyon maliyetleri bu örnekleme dahildir. Bu ortamda akıcılık hedefi karşılanmamıştır. Bu son araç sahnesinin yazılımsal render ölçümüdür; 60 FPS, üretim GPU performansı, bellek kararlılığı ve fiziksel mobil akıcılık onayı değildir. Gölge haritası statik duruşta tekrar çizilmez; hareket ve model değişiminde yenilenir. Düşük kare hızında çözünürlük ve gölge kalitesi azaltılır.
 
-- Gerçek lüks yat ve fotogerçekçi premium araç filosu yok. Stilize CC0 sürat tekneleri yat diye sunulmaz. Referans görselin fotogerçekçi seviyesi karşılanmadı.
-- Tek bir gerçek helikopter var; ikinci model ve iki farklı helikopter arasında ürün değişimi doğrulanmadı.
-- Fiziksel su yansıması, hacimsel atmosfer, gerçek HDRI, ileri rotor motion blur ve su köpüğü simülasyonu yok. Shader dalgaları, basit halka izi, temas gölgeleri ve PMREM ortamı var.
-- Dokunmatik gerçek cihazda, Edge/Safari/Firefox'ta, WebGL bağlamı kaybı ve gerçek 15 saniyelik timeout yolunda test yapılmadı. Ağ kesintisi yolu test edildi.
-- Rezervasyon backend'i, ödeme, canlı destek, stok/müsaitlik ve gerçek kiralama fiyatları yok; modal bir demo olduğunu açıklar.
-- Yeni cloud task'ta snapshot restorasyonu veya yayınlama test edilmedi. Yapılandırma taslağına kurulum/başlatma talimatları kaydedildi; yayınlama yapılmadı.
+- Araç daha detaylı gerçekçi PBR varlığıyla güncellendi. Referansın birebir kopyası, fotoğraf eşdeğerliği veya offline path tracing kalitesi iddia edilmez.
+- Lüks yat ve ikinci helikopter modeli hâlâ yok; sürat tekneleri stilize.
+- Beton dokusu özgün prosedürel materyaldir; taranmış fotoğraf dokusu değildir. Su yansıması/köpük fiziği, hacimsel atmosfer ve rotor motion blur yok.
+- Canlı rezervasyon, ödeme, destek veya gerçek kiralama stoku yok. Demo modalı bunu açıklar.
+- Edge/Safari/Firefox, fiziksel telefon, WebGL context-loss ve gerçek 15 saniyelik timeout yolu ayrıca test edilmedi.

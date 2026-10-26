@@ -20,3 +20,16 @@ Kenney için atıf zorunlu değildir; gönüllü olarak verilmiştir. AnirudhRao
 Asıl Kenney sitesi ortam ağ politikasında 403 verdi; varlıklar lisans açıklaması bulunan GitHub aynalarından edinildi. Helikopter için izin beyanı olmayan alternatifler projeye dahil edilmedi. Araç ve deniz modelleri stilizedir. Sürat tekneleri lüks yat değildir; bu eksik ürün listesinde ve README'de açıkça belirtilir. Fotoğraf tabanlı veya sahte marka etiketli model kullanılmaz. Ürün küçük resimleri yüklenmiş gerçek 3D sahnenin render'ından oluşturulur; ilk yüklemede numara gösterilir.
 
 HDRI/fotoğraf/font indirilmedi. PMREM ortamı, shader suyu, pist ve yol proje koduyla oluşturulur. Three.js: MIT (npm paket lisansı). Vite ve TypeScript: kendi npm lisansları.
+
+## Gerçekçi araç vitrini güncellemesi — 26 Ekim 2026
+
+Aktif araç listesi artık iki Kenney aracı yerine **aynı Car Concept modelinin Graphite ve Pearl boya seçeneklerini** kullanır. Bunlar iki farklı araç modeli değildir. Eski Kenney GLB dosyaları arşiv/önceki sürüm varlıkları olarak tutulur; aktif araç sahnesinde kullanılmaz.
+
+- **Model:** Car Concept. Model/doku düzenlemesi: **Eric Chadwick / Darmstadt Graphics Group GmbH, 2024**. **CC BY 4.0**. Asıl temel geometri Unity Fan'ın CC0 konsept otomobilinden gelir.
+- **Doğrulanan resmi kaynak ve lisans:** https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CarConcept . Kaynağın README'sindeki Legal bölümü yerel `public/licenses/car-concept-source.md` içinde korunur.
+- **Yerel dosya:** `public/models/car-concept.glb` (~11,2 MiB). Gerçek 3D geometri, AO, lastik normal dokuları, iç mekân ve clearcoat boyalar içerir. Yaklaşık 213.347 üçgen; loader sonrasında 108 mesh görünür.
+- **Değişiklikler:** `scripts/prepare-concept.py` Graphite materyal varyantını varsayılan yapar; logo içeren plaka dokusu ve direksiyon amblemi görünümden çıkarılır. Pearl seçeneği aynı geometride gövde boya rengini değiştirir. Modelde kullanılan Khronos işaretleri ayrıca `public/licenses/khronos-marks.txt` koşullarına tabidir; bu demo bir Khronos onayı veya ortaklık beyanı değildir.
+- **HDRI:** Venice Sunset 1K — **Greg Zaal / HDRI Haven (Poly Haven)**, **CC0**. Kaynak: https://polyhaven.com/a/venice_sunset . Yerel dosya: `public/environments/venice_sunset_1k.hdr`. Edinilen dağıtım: https://github.com/mrdoob/three.js/blob/dev/examples/textures/equirectangular/venice_sunset_1k.hdr . Görüntü PMREM ile gerçek çevre yansımalarına çevrilir; ekran arkasına yerleştirilmiş araç fotoğrafı değildir.
+- **Beton mimari, döşeme/doku ve temas gölgesi:** bu proje için `src/showroom.ts` içinde özgün olarak üretilir. Beton kalıp izleri, gözenekler, derzler, bump haritası, eğik taşıyıcılar ve gerçek gölge alan yüzeyler 3D ortamı oluşturur. Üçüncü taraf bina fotoğrafı kullanılmaz.
+
+Donanımlı WebGL'de fiziksel cam transmission materyali korunur. SwiftShader/llvmpipe yazılımsal render tespit edilirse camın çok geçişli kırılması yerine transparan cam ve daha düşük render/gölge çözünürlüğü kullanılır. Bu kalite farkı test raporunda açıklanır.

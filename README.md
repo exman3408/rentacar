@@ -38,8 +38,8 @@ Bu bulut ortamında testler `/usr/bin/chromium` kullanır. Diğer sistemlerde `C
 
 ## Kapsam ve dürüst sınırlamalar
 
-İki Kenney araç modeli, iki Kenney sürat teknesi ve bir AnirudhRao MH-6 modeli yereldir. Bunlar Mercedes, BMW veya lüks yat diye etiketlenmez. MH-6 askerî kökenli bir görsel varlıktır, sivil kiralama teklifi değildir. Bir helikopter olduğundan değişim senaryosu tekrar oynatma ile sınanır; ikinci bir helikopter ürününün doğrulaması yoktur.
+Aktif araç vitrini CC BY 4.0 lisanslı detaylı Car Concept modelini Graphite ve Pearl boya seçenekleriyle gösterir; bunlar aynı aracın iki boya seçeneğidir. Model, AO/lastik dokuları, metalik clearcoat boya ve gerçek HDR çevre yansımaları kullanır. Beton mimari ortam `src/showroom.ts` içinde üretilir. İki Kenney sürat teknesi ve bir AnirudhRao MH-6 modeli de yereldir. Bunlar Mercedes, BMW veya lüks yat diye etiketlenmez. MH-6 askerî kökenli bir görsel varlıktır, sivil kiralama teklifi değildir. Bir helikopter olduğundan değişim senaryosu tekrar oynatma ile sınanır; ikinci bir helikopter ürününün doğrulaması yoktur.
 
-Stilize araç/tekne varlıkları ve prosedürel çevre referanstaki fotogerçekçi kaliteyi karşılamaz. Deniz dalga shader'ı ve basit su izi vardır; fiziksel su yansıması/sıçrama simülasyonu ve HDRI dosyası yoktur. Yansıma aydınlatması PMREM RoomEnvironment ile üretilir. Gerçek lüks yat ve fotogerçekçi ticari filo varlıkları için lisanslı yeni varlıklar gerekir.
+Araç sahnesi daha gerçekçi PBR model ve mimari ortamla yenilenmiştir; gönderilen referansın birebir kopyası veya offline path-traced render kalitesi iddia edilmez. Tekne varlıkları hâlâ stilizedir. Deniz dalga shader'ı ve basit su izi vardır; fiziksel su yansıması/sıçrama simülasyonu yoktur. Araç yansımaları yerel Venice Sunset HDRI + PMREM ile, HDR yüklenemezse RoomEnvironment ile üretilir. Gerçek lüks yat ve fotogerçekçi ticari filo varlıkları için lisanslı yeni varlıklar gerekir.
 
 [Kaynaklar ve lisanslar](ASSET_SOURCES.md) · [Test raporu](TEST_REPORT.md)
